@@ -1,3 +1,6 @@
+MIGRATION_NAME=init_schema
+DB_URL=postgresql://root:secret@localhost:5432/go_exchange?sslmode=disable
+
 ## up: starts all containers in the background without forcing build
 up:
 	@echo "Starting Docker images..."
@@ -18,4 +21,21 @@ down:
 	docker-compose down
 	@echo "Done!"
 
-.PHONY: up up_build down
+## migrate_create: create migration files with name MIGRATION_NAME
+migrate_create:
+	migrate create -ext sql -dir db/migration -seq ${MIGRATION_NAME}
+
+## migrate_up: migrate db for the last version
+migrate_up:
+	migrate -path db/migration -database "$(DB_URL)" -verbose up
+
+## migrate_down: migrate db for the first version
+migrate_down:
+	migrate -path db/migration -database "$(DB_URL)" -verbose down
+
+## migrate_drop: drop averything inside database
+migrate_drop:
+	migrate -path db/migration -database "$(DB_URL)" -verbose drop -f
+
+.PHONY: up up_build down \
+		migrate_create migrate_up migrate_down migrate_drop
