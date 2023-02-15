@@ -4,7 +4,7 @@
 - [x] #1 - Design DB schema and generate SQL code with [dbdiagram](https://dbdiagram.io/)
 - [x] #2 - Setup Docker Compose + Postgres + TablePlus to create DB schema
 - [x] #3 - Write and Run database migration with [Migrate](https://github.com/golang-migrate/migrate)
-- [ ] Generate CRUD code from SQL with [SQLC](https://sqlc.dev/)
+- [x] #4 - Generate CRUD code from SQL with [SQLC](https://sqlc.dev/)
 - [ ] Write unit tests for database CRUD with random data, using [PQ](https://github.com/lib/pq) and [Testify](https://github.com/stretchr/testify)
 - [ ] Implement database transaction
 - [ ] DB transaction lock and handle deadlock

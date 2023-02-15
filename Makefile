@@ -37,5 +37,10 @@ migrate_down:
 migrate_drop:
 	migrate -path db/migration -database "$(DB_URL)" -verbose drop -f
 
+## sqlc: generate go code from SQL
+sqlc:
+	sqlc generate
+
 .PHONY: up up_build down \
-		migrate_create migrate_up migrate_down migrate_drop
+		migrate_create migrate_up migrate_down migrate_drop \
+		sqlc

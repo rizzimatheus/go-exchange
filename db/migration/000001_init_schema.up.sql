@@ -18,7 +18,7 @@ CREATE TABLE "accounts" (
 CREATE TABLE "entries" (
   "id" bigserial PRIMARY KEY,
   "account_id" bigint NOT NULL,
-  "ammount" bigint NOT NULL,
+  "amount" bigint NOT NULL,
   "created_at" timestamptz NOT NULL DEFAULT (now())
 );
 
@@ -26,7 +26,7 @@ CREATE TABLE "transfers" (
   "id" bigserial PRIMARY KEY,
   "from_account_id" bigint NOT NULL,
   "to_account_id" bigint NOT NULL,
-  "ammount" bigint NOT NULL,
+  "amount" bigint NOT NULL,
   "created_at" timestamptz NOT NULL DEFAULT (now())
 );
 
@@ -43,7 +43,7 @@ CREATE TABLE "bids" (
   "from_account_id" bigint NOT NULL,
   "to_account_id" bigint NOT NULL,
   "price" bigint NOT NULL,
-  "ammount" bigint NOT NULL,
+  "amount" bigint NOT NULL,
   "status" varchar NOT NULL,
   "created_at" timestamptz NOT NULL DEFAULT (now())
 );
@@ -54,7 +54,7 @@ CREATE TABLE "asks" (
   "from_account_id" bigint NOT NULL,
   "to_account_id" bigint NOT NULL,
   "price" bigint NOT NULL,
-  "ammount" bigint NOT NULL,
+  "amount" bigint NOT NULL,
   "status" varchar NOT NULL,
   "created_at" timestamptz NOT NULL DEFAULT (now())
 );
@@ -102,13 +102,13 @@ CREATE INDEX ON "asks" ("from_account_id", "to_account_id");
 
 CREATE INDEX ON "asks" ("status");
 
-COMMENT ON COLUMN "entries"."ammount" IS 'can be negative or positive';
+COMMENT ON COLUMN "entries"."amount" IS 'can be negative or positive';
 
-COMMENT ON COLUMN "transfers"."ammount" IS 'it must be positive';
+COMMENT ON COLUMN "transfers"."amount" IS 'it must be positive';
 
-COMMENT ON COLUMN "bids"."ammount" IS 'it must be positive';
+COMMENT ON COLUMN "bids"."amount" IS 'it must be positive';
 
-COMMENT ON COLUMN "asks"."ammount" IS 'it must be positive';
+COMMENT ON COLUMN "asks"."amount" IS 'it must be positive';
 
 ALTER TABLE "accounts" ADD FOREIGN KEY ("owner") REFERENCES "users" ("username");
 
