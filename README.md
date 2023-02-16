@@ -5,7 +5,9 @@
 - [x] #2 - Setup Docker Compose + Postgres + TablePlus to create DB schema
 - [x] #3 - Write and Run database migration with [Migrate](https://github.com/golang-migrate/migrate)
 - [x] #4 - Generate CRUD code from SQL with [SQLC](https://sqlc.dev/)
-- [ ] Write unit tests for database CRUD with random data, using [PQ](https://github.com/lib/pq) and [Testify](https://github.com/stretchr/testify)
+- [x] #5.1 - Write unit tests for database CRUD with random data, using [PQ](https://github.com/lib/pq) and [Testify](https://github.com/stretchr/testify)
+- [x] #5.2 - Load config from file and environment variables with [Viper](https://github.com/spf13/viper)
+- [x] #5.3 - Securely store passwords using Hash password with Bcrypt
 - [ ] Implement database transaction
 - [ ] DB transaction lock and handle deadlock
 - [ ] Avoid deadlock in DB transaction. Queries order matters
@@ -13,11 +15,9 @@
 
 ## Building RESTful HTTP JSON API [Gin]
 - [ ] Implement RESTful HTTP API using [Gin](https://github.com/gin-gonic/gin)
-- [ ] Load config from file and environment variables with [Viper](https://github.com/spf13/viper)
 - [ ] Mock DB for testing HTTP API and achieve 100% coverage with [GoMock](https://github.com/golang/mock)
 - [ ] Implement transfer money API with a custom params validator
 - [ ] Handle DB errors correctly
-- [ ] Securely store passwords using Hash password with Bcrypt
 - [ ] Write stronger unit tests with a custom [GoMock](https://github.com/golang/mock) matcher
 - [ ] Create and verify [JWT](https://github.com/golang-jwt/jwt) and [PASETO](https://github.com/o1egl/paseto) token with [UUID](https://github.com/google/uuid)
 - [ ] Implement login user API that returns [JWT](https://github.com/golang-jwt/jwt) or [PASETO](https://github.com/o1egl/paseto) access token

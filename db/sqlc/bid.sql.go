@@ -9,12 +9,12 @@ import (
 	"context"
 )
 
-const createBids = `-- name: CreateBids :one
+const createBid = `-- name: CreateBid :one
 INSERT INTO bids (pair, from_account_id, to_account_id, price, amount, status) VALUES ($1, $2, $3, $4, $5, $6)
 RETURNING id, pair, from_account_id, to_account_id, price, amount, status, created_at
 `
 
-type CreateBidsParams struct {
+type CreateBidParams struct {
 	Pair          string `json:"pair"`
 	FromAccountID int64  `json:"from_account_id"`
 	ToAccountID   int64  `json:"to_account_id"`
@@ -23,8 +23,8 @@ type CreateBidsParams struct {
 	Status        string `json:"status"`
 }
 
-func (q *Queries) CreateBids(ctx context.Context, arg CreateBidsParams) (Bid, error) {
-	row := q.db.QueryRowContext(ctx, createBids,
+func (q *Queries) CreateBid(ctx context.Context, arg CreateBidParams) (Bid, error) {
+	row := q.db.QueryRowContext(ctx, createBid,
 		arg.Pair,
 		arg.FromAccountID,
 		arg.ToAccountID,

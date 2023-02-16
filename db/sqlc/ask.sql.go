@@ -9,12 +9,12 @@ import (
 	"context"
 )
 
-const createAsks = `-- name: CreateAsks :one
+const createAsk = `-- name: CreateAsk :one
 INSERT INTO asks (pair, from_account_id, to_account_id, price, amount, status) VALUES ($1, $2, $3, $4, $5, $6)
 RETURNING id, pair, from_account_id, to_account_id, price, amount, status, created_at
 `
 
-type CreateAsksParams struct {
+type CreateAskParams struct {
 	Pair          string `json:"pair"`
 	FromAccountID int64  `json:"from_account_id"`
 	ToAccountID   int64  `json:"to_account_id"`
@@ -23,8 +23,8 @@ type CreateAsksParams struct {
 	Status        string `json:"status"`
 }
 
-func (q *Queries) CreateAsks(ctx context.Context, arg CreateAsksParams) (Ask, error) {
-	row := q.db.QueryRowContext(ctx, createAsks,
+func (q *Queries) CreateAsk(ctx context.Context, arg CreateAskParams) (Ask, error) {
+	row := q.db.QueryRowContext(ctx, createAsk,
 		arg.Pair,
 		arg.FromAccountID,
 		arg.ToAccountID,

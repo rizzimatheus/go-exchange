@@ -10,6 +10,6 @@ ORDER BY id
 LIMIT $3
 OFFSET $4;
 
--- name: CreateTrades :one
+-- name: CreateTrade :one
 INSERT INTO trades (first_transfer_id, second_transfer_id) VALUES ($1, $2)
 RETURNING *;

@@ -9,18 +9,18 @@ import (
 	"context"
 )
 
-const createTrades = `-- name: CreateTrades :one
+const createTrade = `-- name: CreateTrade :one
 INSERT INTO trades (first_transfer_id, second_transfer_id) VALUES ($1, $2)
 RETURNING id, first_transfer_id, second_transfer_id, created_at
 `
 
-type CreateTradesParams struct {
+type CreateTradeParams struct {
 	FirstTransferID  int64 `json:"first_transfer_id"`
 	SecondTransferID int64 `json:"second_transfer_id"`
 }
 
-func (q *Queries) CreateTrades(ctx context.Context, arg CreateTradesParams) (Trade, error) {
-	row := q.db.QueryRowContext(ctx, createTrades, arg.FirstTransferID, arg.SecondTransferID)
+func (q *Queries) CreateTrade(ctx context.Context, arg CreateTradeParams) (Trade, error) {
+	row := q.db.QueryRowContext(ctx, createTrade, arg.FirstTransferID, arg.SecondTransferID)
 	var i Trade
 	err := row.Scan(
 		&i.ID,

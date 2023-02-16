@@ -13,11 +13,11 @@ import (
 type Querier interface {
 	AddAccountBalance(ctx context.Context, arg AddAccountBalanceParams) (Account, error)
 	CreateAccount(ctx context.Context, arg CreateAccountParams) (Account, error)
-	CreateAsks(ctx context.Context, arg CreateAsksParams) (Ask, error)
-	CreateBids(ctx context.Context, arg CreateBidsParams) (Bid, error)
+	CreateAsk(ctx context.Context, arg CreateAskParams) (Ask, error)
+	CreateBid(ctx context.Context, arg CreateBidParams) (Bid, error)
 	CreateEntry(ctx context.Context, arg CreateEntryParams) (Entry, error)
 	CreateSession(ctx context.Context, arg CreateSessionParams) (Session, error)
-	CreateTrades(ctx context.Context, arg CreateTradesParams) (Trade, error)
+	CreateTrade(ctx context.Context, arg CreateTradeParams) (Trade, error)
 	CreateTransfer(ctx context.Context, arg CreateTransferParams) (Transfer, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
 	DeleteAccount(ctx context.Context, id int64) error
