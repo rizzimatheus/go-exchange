@@ -41,6 +41,10 @@ migrate_drop:
 sqlc:
 	sqlc generate
 
+## test: execute tests
+test:
+	go test -v -cover ./...
+
 .PHONY: up up_build down \
 		migrate_create migrate_up migrate_down migrate_drop \
-		sqlc
+		sqlc test
