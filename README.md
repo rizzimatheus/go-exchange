@@ -9,7 +9,7 @@
 - [x] #5.2 - Load config from file and environment variables with [Viper](https://github.com/spf13/viper)
 - [x] #5.3 - Securely store passwords using Hash password with Bcrypt
 - [x] #6 - Implement database transaction
-- [ ] Setup Github Actions for Golang + Postgres to run automated tests
+- [x] #7 - Setup Github Actions for Golang + Postgres to run automated tests
 
 ## Building RESTful HTTP JSON API [Gin]
 - [ ] Implement RESTful HTTP API using [Gin](https://github.com/gin-gonic/gin)
