@@ -32,8 +32,12 @@ CREATE TABLE "transfers" (
 
 CREATE TABLE "trades" (
   "id" bigserial PRIMARY KEY,
-  "first_transfer_id" bigint NOT NULL,
-  "second_transfer_id" bigint NOT NULL,
+  "first_from_account_id" bigint NOT NULL,
+  "first_to_account_id" bigint NOT NULL,
+  "first_amount" bigint NOT NULL,
+  "second_from_account_id" bigint NOT NULL,
+  "second_to_account_id" bigint NOT NULL,
+  "second_amount" bigint NOT NULL,
   "created_at" timestamptz NOT NULL DEFAULT (now())
 );
 
@@ -82,6 +86,14 @@ CREATE INDEX ON "transfers" ("to_account_id");
 
 CREATE INDEX ON "transfers" ("from_account_id", "to_account_id");
 
+CREATE INDEX ON "trades" ("first_from_account_id");
+
+CREATE INDEX ON "trades" ("first_to_account_id");
+
+CREATE INDEX ON "trades" ("second_from_account_id");
+
+CREATE INDEX ON "trades" ("second_to_account_id");
+
 CREATE INDEX ON "bids" ("pair");
 
 CREATE INDEX ON "bids" ("from_account_id");
@@ -106,6 +118,10 @@ COMMENT ON COLUMN "entries"."amount" IS 'can be negative or positive';
 
 COMMENT ON COLUMN "transfers"."amount" IS 'it must be positive';
 
+COMMENT ON COLUMN "trades"."first_amount" IS 'it must be positive';
+
+COMMENT ON COLUMN "trades"."second_amount" IS 'it must be positive';
+
 COMMENT ON COLUMN "bids"."amount" IS 'it must be positive';
 
 COMMENT ON COLUMN "asks"."amount" IS 'it must be positive';
@@ -118,9 +134,13 @@ ALTER TABLE "transfers" ADD FOREIGN KEY ("from_account_id") REFERENCES "accounts
 
 ALTER TABLE "transfers" ADD FOREIGN KEY ("to_account_id") REFERENCES "accounts" ("id");
 
-ALTER TABLE "trades" ADD FOREIGN KEY ("first_transfer_id") REFERENCES "transfers" ("id");
+ALTER TABLE "trades" ADD FOREIGN KEY ("first_from_account_id") REFERENCES "accounts" ("id");
 
-ALTER TABLE "trades" ADD FOREIGN KEY ("second_transfer_id") REFERENCES "transfers" ("id");
+ALTER TABLE "trades" ADD FOREIGN KEY ("first_to_account_id") REFERENCES "accounts" ("id");
+
+ALTER TABLE "trades" ADD FOREIGN KEY ("second_from_account_id") REFERENCES "accounts" ("id");
+
+ALTER TABLE "trades" ADD FOREIGN KEY ("second_to_account_id") REFERENCES "accounts" ("id");
 
 ALTER TABLE "bids" ADD FOREIGN KEY ("from_account_id") REFERENCES "accounts" ("id");
 

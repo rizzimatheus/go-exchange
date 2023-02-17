@@ -8,9 +8,7 @@
 - [x] #5.1 - Write unit tests for database CRUD with random data, using [PQ](https://github.com/lib/pq) and [Testify](https://github.com/stretchr/testify)
 - [x] #5.2 - Load config from file and environment variables with [Viper](https://github.com/spf13/viper)
 - [x] #5.3 - Securely store passwords using Hash password with Bcrypt
-- [ ] Implement database transaction
-- [ ] DB transaction lock and handle deadlock
-- [ ] Avoid deadlock in DB transaction. Queries order matters
+- [x] #6 - Implement database transaction
 - [ ] Setup Github Actions for Golang + Postgres to run automated tests
 
 ## Building RESTful HTTP JSON API [Gin]

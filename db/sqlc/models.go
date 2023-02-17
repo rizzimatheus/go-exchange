@@ -62,10 +62,16 @@ type Session struct {
 }
 
 type Trade struct {
-	ID               int64     `json:"id"`
-	FirstTransferID  int64     `json:"first_transfer_id"`
-	SecondTransferID int64     `json:"second_transfer_id"`
-	CreatedAt        time.Time `json:"created_at"`
+	ID                 int64 `json:"id"`
+	FirstFromAccountID int64 `json:"first_from_account_id"`
+	FirstToAccountID   int64 `json:"first_to_account_id"`
+	// it must be positive
+	FirstAmount         int64 `json:"first_amount"`
+	SecondFromAccountID int64 `json:"second_from_account_id"`
+	SecondToAccountID   int64 `json:"second_to_account_id"`
+	// it must be positive
+	SecondAmount int64     `json:"second_amount"`
+	CreatedAt    time.Time `json:"created_at"`
 }
 
 type Transfer struct {
