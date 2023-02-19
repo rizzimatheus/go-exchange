@@ -9,7 +9,7 @@ import (
 const alphabet = "abcdefghijklmnopqrstuvwxyz"
 var currencies = [...]string{BRL, CAD, EUR, JPY, USD}
 var pairs = [...]string{USDT_BRL, USDT_CAD, USDT_EUR, USDT_JPY, USDT_USD, BTC_USDT, ETH_USDT, MATIC_USDT, SOL_USDT, ETH_BTC, MATIC_BTC, SOL_BTC, MATIC_ETH, SOL_ETH}
-var status = [...]string{ACTIVATE, COMPLETED, CANCELED}
+var status = [...]string{ACTIVE, COMPLETED, CANCELED}
 
 // RandomInt generates a random integer between min and max
 func RandomInt(min, max int64) int64 {

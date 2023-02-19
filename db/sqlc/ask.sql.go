@@ -119,3 +119,31 @@ func (q *Queries) ListAsks(ctx context.Context, arg ListAsksParams) ([]Ask, erro
 	}
 	return items, nil
 }
+
+const updateAsk = `-- name: UpdateAsk :one
+UPDATE asks
+  SET status = $2
+WHERE id = $1
+RETURNING id, pair, from_account_id, to_account_id, price, amount, status, created_at
+`
+
+type UpdateAskParams struct {
+	ID     int64  `json:"id"`
+	Status string `json:"status"`
+}
+
+func (q *Queries) UpdateAsk(ctx context.Context, arg UpdateAskParams) (Ask, error) {
+	row := q.db.QueryRowContext(ctx, updateAsk, arg.ID, arg.Status)
+	var i Ask
+	err := row.Scan(
+		&i.ID,
+		&i.Pair,
+		&i.FromAccountID,
+		&i.ToAccountID,
+		&i.Price,
+		&i.Amount,
+		&i.Status,
+		&i.CreatedAt,
+	)
+	return i, err
+}

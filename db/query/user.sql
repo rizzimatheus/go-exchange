@@ -6,6 +6,10 @@ RETURNING *;
 SELECT * FROM users
 WHERE username = $1 LIMIT 1;
 
+-- name: DeleteUser :exec
+DELETE FROM users
+WHERE username = $1;
+
 -- name: UpdateUser :one
 UPDATE users
 SET

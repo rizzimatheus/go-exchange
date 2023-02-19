@@ -13,3 +13,9 @@ OFFSET $4;
 -- name: CreateBid :one
 INSERT INTO bids (pair, from_account_id, to_account_id, price, amount, status) VALUES ($1, $2, $3, $4, $5, $6)
 RETURNING *;
+
+-- name: UpdateBid :one
+UPDATE bids
+  SET status = $2
+WHERE id = $1
+RETURNING *;

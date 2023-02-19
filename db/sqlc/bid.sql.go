@@ -119,3 +119,31 @@ func (q *Queries) ListBids(ctx context.Context, arg ListBidsParams) ([]Bid, erro
 	}
 	return items, nil
 }
+
+const updateBid = `-- name: UpdateBid :one
+UPDATE bids
+  SET status = $2
+WHERE id = $1
+RETURNING id, pair, from_account_id, to_account_id, price, amount, status, created_at
+`
+
+type UpdateBidParams struct {
+	ID     int64  `json:"id"`
+	Status string `json:"status"`
+}
+
+func (q *Queries) UpdateBid(ctx context.Context, arg UpdateBidParams) (Bid, error) {
+	row := q.db.QueryRowContext(ctx, updateBid, arg.ID, arg.Status)
+	var i Bid
+	err := row.Scan(
+		&i.ID,
+		&i.Pair,
+		&i.FromAccountID,
+		&i.ToAccountID,
+		&i.Price,
+		&i.Amount,
+		&i.Status,
+		&i.CreatedAt,
+	)
+	return i, err
+}

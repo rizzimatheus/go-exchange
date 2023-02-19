@@ -45,6 +45,10 @@ sqlc:
 test:
 	go test -v -cover ./...
 
+## server: starts server
+server:
+	go run main.go
+
 .PHONY: up up_build down \
 		migrate_create migrate_up migrate_down migrate_drop \
-		sqlc test
+		sqlc test server

@@ -1,15 +1,15 @@
 package util
 
 const(
-	ACTIVATE="activate"
+	ACTIVE="active"
 	COMPLETED="completed"
 	CANCELED="canceled"
 )
 
-// IsSupportedCurrency returns true if the currency is supported
+// IsSupportedStatus returns true if the status is supported
 func IsSupportedStatus(status string) bool {
 	switch status {
-	case ACTIVATE, COMPLETED, CANCELED:
+	case ACTIVE, COMPLETED, CANCELED:
 		return true
 	}
 	return false

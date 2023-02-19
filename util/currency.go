@@ -41,7 +41,7 @@ const (
 // IsSupportedCurrency returns true if the currency is supported
 func IsSupportedCurrency(currency string) bool {
 	switch currency {
-	case BRL, CAD, EUR, JPY, USD:
+	case BRL, CAD, EUR, JPY, USD, BTC, ETH, MATIC, SOL, USDT:
 		return true
 	}
 	return false
