@@ -2,6 +2,19 @@ version: '3'
 
 services:
 
+  exchange:
+      build:
+        context: .
+        dockerfile: Dockerfile
+      restart: always
+      ports:
+        - "8080:8080"
+      deploy:
+        mode: replicated
+        replicas: 1
+      environment:
+        DB_SOURCE: "postgres://root:secret@postgres:5432/go_exchange?sslmode=disable"
+
   postgres:
     image: 'postgres:14.7'
     ports:

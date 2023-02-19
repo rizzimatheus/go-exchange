@@ -13,8 +13,9 @@
 
 ## Building RESTful HTTP JSON API [Gin]
 - [x] #8 - Implement RESTful HTTP API using [Gin](https://github.com/gin-gonic/gin) and custom params validator
+- [x] #9.1 - Run DB migrations directly inside Golang code
+- [x] #9.2 - Build a minimal Golang Docker image with a multistage Dockerfile
 - [ ] Mock DB for testing HTTP API and achieve 100% coverage with [GoMock](https://github.com/golang/mock)
-- [ ] Handle DB errors correctly
 - [ ] Write stronger unit tests with a custom [GoMock](https://github.com/golang/mock) matcher
 - [ ] Create and verify [JWT](https://github.com/golang-jwt/jwt) and [PASETO](https://github.com/o1egl/paseto) token with [UUID](https://github.com/google/uuid)
 - [ ] Implement login user API that returns [JWT](https://github.com/golang-jwt/jwt) or [PASETO](https://github.com/o1egl/paseto) access token
@@ -32,7 +33,6 @@
 - [ ] Automatic generate and serve Swagger docs from Go server with [Swagger UI](https://github.com/swagger-api/swagger-ui)
 - [ ] Embed static frontend files inside Golang backend server's binary with [Statik](https://github.com/rakyll/statik)
 - [ ] Validate gRPC parameters and send human/machine friendly response
-- [ ] Run DB migrations directly inside Golang code
 - [ ] Partial update DB record with SQLC nullable parameters
 - [ ] Build gRPC update API with optional parameters
 - [ ] Add authorization to protect gRPC API

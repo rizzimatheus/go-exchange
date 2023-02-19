@@ -8,6 +8,7 @@ type Config struct {
 	DBDriver          string `mapstructure:"DB_DRIVER"`
 	DBSource          string `mapstructure:"DB_SOURCE"`
 	HTTPServerAddress string `mapstructure:"HTTP_SERVER_ADDRESS"`
+	MigrationURL      string `mapstructure:"MIGRATION_URL"`
 }
 
 // LoadConfig reads configuration from file or environment variables.
