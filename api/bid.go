@@ -2,6 +2,8 @@ package api
 
 import (
 	"database/sql"
+	"errors"
+	"go-exchange/token"
 	"go-exchange/util"
 	"net/http"
 
@@ -28,13 +30,26 @@ func (server *Server) createBid(ctx *gin.Context) {
 
 	c1, c2 := util.CurrenciesFromPair(req.Pair)
 
-	_, valid := server.validAccount(ctx, req.FromAccountID, c2)
+	fromAccount, valid := server.validAccount(ctx, req.FromAccountID, c2)
 	if !valid {
 		return
 	}
 
-	_, valid = server.validAccount(ctx, req.ToAccountID, c1)
+	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
+	if fromAccount.Owner != authPayload.Username {
+		err := errors.New("from account doesn't belong to the authenticated user")
+		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
+		return
+	}
+
+	toAccount, valid := server.validAccount(ctx, req.ToAccountID, c1)
 	if !valid {
+		return
+	}
+
+	if toAccount.Owner != authPayload.Username {
+		err := errors.New("to account doesn't belong to the authenticated user")
+		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
 		return
 	}
 
@@ -79,6 +94,11 @@ func (server *Server) getBid(ctx *gin.Context) {
 		return
 	}
 
+	_, err = server.verifyAccountOwner(ctx, bid.FromAccountID)
+	if err != nil {
+		return
+	}
+
 	ctx.JSON(http.StatusOK, bid)
 }
 
@@ -94,6 +114,16 @@ func (server *Server) listBids(ctx *gin.Context) {
 	var req listBidRequest
 	if err := ctx.ShouldBindQuery(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	_, err := server.verifyAccountOwner(ctx, req.FromAccountID)
+	if err != nil {
+		return
+	}
+
+	_, err = server.verifyAccountOwner(ctx, req.ToAccountID)
+	if err != nil {
 		return
 	}
 
@@ -123,6 +153,21 @@ func (server *Server) updateBid(ctx *gin.Context) {
 	var req updateBidRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	b, err := server.store.GetBid(ctx, req.ID)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			ctx.JSON(http.StatusNotFound, errorResponse(err))
+			return
+		}
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	_, err = server.verifyAccountOwner(ctx, b.FromAccountID)
+	if err != nil {
 		return
 	}
 

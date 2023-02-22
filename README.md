@@ -19,23 +19,23 @@
 - [x] v2.3.2 - Write stronger unit tests with a custom [GoMock](https://github.com/golang/mock) matcher
 - [x] v2.4.0 - Create and verify [JWT](https://github.com/golang-jwt/jwt) and [PASETO](https://github.com/o1egl/paseto) token with [UUID](https://github.com/google/uuid)
 - [x] v2.5.0 - Implement login user API that returns [JWT](https://github.com/golang-jwt/jwt) or [PASETO](https://github.com/o1egl/paseto) access token
-- [ ] Implement authentication middleware and authorization rules using Gin
-
-## Sessions, Documentation and gRPC
+- [x] v2.6.0 - Implement authentication middleware and authorization rules using [Gin](https://github.com/gin-gonic/gin)
 - [ ] Manage user session with refresh token
-- [ ] Generate DB documentation page and schema SQL dump from [DB Docs](https://dbdocs.io/docs) and [DBML](https://www.dbml.org/cli/#installation)
-- [ ] Introduction to gRPC
+
+## 3. gRPC and Documentation
 - [ ] Define gRPC API and generate Go code with [Protocol Buffer Compiler](https://grpc.io/docs/protoc-installation/)
 - [ ] Run a golang gRPC server and call its API
 - [ ] Implement gRPC API to create and login users
 - [ ] Write code once, serve both gRPC and HTTP requests with [gRPC Gateway](https://github.com/grpc-ecosystem/grpc-gateway)
 - [ ] Extract info from gRPC metadata
-- [ ] Automatic generate and serve Swagger docs from Go server with [Swagger UI](https://github.com/swagger-api/swagger-ui)
-- [ ] Embed static frontend files inside Golang backend server's binary with [Statik](https://github.com/rakyll/statik)
 - [ ] Validate gRPC parameters and send human/machine friendly response
-- [ ] Partial update DB record with SQLC nullable parameters
 - [ ] Build gRPC update API with optional parameters
 - [ ] Add authorization to protect gRPC API
+- [ ] Write structured logs for gRPC APIs
+- [ ] Write HTTP logger middleware in Go
+- [ ] Generate DB documentation page and schema SQL dump from [DB Docs](https://dbdocs.io/docs) and [DBML](https://www.dbml.org/cli/#installation)
+- [ ] Automatic generate and serve Swagger docs from Go server with [Swagger UI](https://github.com/swagger-api/swagger-ui)
+- [ ] Embed static frontend files inside Golang backend server's binary with [Statik](https://github.com/rakyll/statik)
 
 ---
 

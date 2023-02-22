@@ -27,7 +27,7 @@ func NewServer(config util.Config, store db.Store) (*Server, error) {
 	switch config.TokenType {
 	case "jwt":
 		tokenMaker, err = token.NewJWTMaker(config.TokenSymmetricKey)
-	case "passeto":
+	case "paseto":
 		tokenMaker, err = token.NewPasetoMaker(config.TokenSymmetricKey)
 	default:
 		tokenMaker, err = token.NewPasetoMaker(config.TokenSymmetricKey)
@@ -55,33 +55,37 @@ func (server *Server) setupRouter() {
 	router := gin.Default()
 
 	router.POST("/users", server.createUser)
-	router.PATCH("/users", server.updateUser)
-	router.DELETE("/users/:username", server.deleteUser)
 	router.POST("/users/login", server.loginUser)
-
-	router.POST("/accounts", server.createAccount)
-	router.GET("/accounts/:id", server.getAccount)
-	router.GET("/accounts", server.listAccounts)
-	router.PATCH("/accounts", server.updateAccount)
-	router.DELETE("/accounts/:id", server.deleteAccount)
-
-	router.POST("/transfers", server.createTransfer)
-	router.GET("/transfers/:id", server.getTransfer)
-	router.GET("/transfers", server.listTransfers)
 
 	router.POST("/trades", server.createTrade)
 	router.GET("/trades/:id", server.getTrade)
 	router.GET("/trades", server.listTrades)
 
-	router.POST("/bids", server.createBid)
-	router.GET("/bids/:id", server.getBid)
-	router.GET("/bids", server.listBids)
-	router.PATCH("/bids", server.updateBid)
+	router.GET("/transfers/:id", server.getTransfer)
+	router.GET("/transfers", server.listTransfers)
 
-	router.POST("/asks", server.createAsk)
-	router.GET("/asks/:id", server.getAsk)
-	router.GET("/asks", server.listAsks)
-	router.PATCH("/asks", server.updateAsk)
+	authRoutes := router.Group("/").Use(authMiddleware(server.tokenMaker))
+
+	authRoutes.PATCH("/users", server.updateUser)
+	authRoutes.DELETE("/users/:username", server.deleteUser)
+
+	authRoutes.POST("/accounts", server.createAccount)
+	authRoutes.GET("/accounts/:id", server.getAccount)
+	authRoutes.GET("/accounts", server.listAccounts)
+	authRoutes.PATCH("/accounts", server.updateAccount)
+	authRoutes.DELETE("/accounts/:id", server.deleteAccount)
+
+	authRoutes.POST("/transfers", server.createTransfer)
+
+	authRoutes.POST("/bids", server.createBid)
+	authRoutes.GET("/bids/:id", server.getBid)
+	authRoutes.GET("/bids", server.listBids)
+	authRoutes.PATCH("/bids", server.updateBid)
+
+	authRoutes.POST("/asks", server.createAsk)
+	authRoutes.GET("/asks/:id", server.getAsk)
+	authRoutes.GET("/asks", server.listAsks)
+	authRoutes.PATCH("/asks", server.updateAsk)
 
 	server.router = router
 }
