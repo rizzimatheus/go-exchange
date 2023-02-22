@@ -18,7 +18,7 @@ type tradeRequest struct {
 	SecondToAccountID   int64 `json:"second_to_account_id" binding:"required,min=1"`
 	SecondAmount        int64 `json:"second_amount" binding:"required,gt=0"`
 
-	Pair string `json:"pair"`
+	Pair string `json:"pair" binding:"required,pair"`
 }
 
 func (server *Server) createTrade(ctx *gin.Context) {

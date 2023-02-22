@@ -15,8 +15,8 @@
 - [x] #8 - Implement RESTful HTTP API using [Gin](https://github.com/gin-gonic/gin) and custom params validator
 - [x] #9.1 - Run DB migrations directly inside Golang code
 - [x] #9.2 - Build a minimal Golang Docker image with a multistage Dockerfile
-- [ ] Mock DB for testing HTTP API and achieve 100% coverage with [GoMock](https://github.com/golang/mock)
-- [ ] Write stronger unit tests with a custom [GoMock](https://github.com/golang/mock) matcher
+- [x] #10.1 - Mock DB for testing HTTP API and achieve 100% coverage with [GoMock](https://github.com/golang/mock)
+- [x] #10.2 - Write stronger unit tests with a custom [GoMock](https://github.com/golang/mock) matcher
 - [ ] Create and verify [JWT](https://github.com/golang-jwt/jwt) and [PASETO](https://github.com/o1egl/paseto) token with [UUID](https://github.com/google/uuid)
 - [ ] Implement login user API that returns [JWT](https://github.com/golang-jwt/jwt) or [PASETO](https://github.com/o1egl/paseto) access token
 - [ ] Implement authentication middleware and authorization rules using Gin

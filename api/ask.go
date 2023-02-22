@@ -11,10 +11,10 @@ import (
 
 // POST http://localhost:8080/asks
 type askRequest struct {
-	Pair          string `json:"pair"`
+	Pair          string `json:"pair" binding:"required,pair"`
 	FromAccountID int64  `json:"from_account_id" binding:"required,min=1"`
 	ToAccountID   int64  `json:"to_account_id" binding:"required,min=1"`
-	Price         int64  `json:"price"`
+	Price         int64  `json:"price" binding:"required,gt=0"`
 	Amount        int64  `json:"amount" binding:"required,gt=0"`
 }
 
@@ -43,7 +43,7 @@ func (server *Server) createAsk(ctx *gin.Context) {
 		ToAccountID:   req.ToAccountID,
 		Price:         req.Price,
 		Amount:        req.Amount,
-		Status:        "active",
+		Status:        util.ACTIVE,
 	}
 
 	result, err := server.store.CreateAsk(ctx, arg)

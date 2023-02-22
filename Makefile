@@ -49,6 +49,10 @@ test:
 server:
 	go run main.go
 
+## mock: generates mock interfaces in reflect mode
+mock:
+	mockgen -package mockdb -destination db/mock/store.go go-exchange/db/sqlc Store
+
 .PHONY: up up_build down \
 		migrate_create migrate_up migrate_down migrate_drop \
 		sqlc test server

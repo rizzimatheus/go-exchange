@@ -12,3 +12,10 @@ var validCurrency validator.Func = func(fieldLevel validator.FieldLevel) bool {
 	}
 	return false
 }
+
+var validPair validator.Func = func(fieldLevel validator.FieldLevel) bool {
+	if pair, ok := fieldLevel.Field().Interface().(string); ok {
+		return util.IsSupportedPair(pair)
+	}
+	return false
+}
