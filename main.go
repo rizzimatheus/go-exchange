@@ -43,8 +43,6 @@ func runGinServer(config util.Config, store db.Store) {
 
 // runDBMigration applies all up migrations
 func runDBMigration(migrationURL string, dbSource string) {
-	log.Printf("%s\n%s", migrationURL, dbSource)
-
 	migration, err := migrate.New(migrationURL, dbSource)
 	if err != nil {
 		log.Fatal("cannot create new migrate instance: ", err)

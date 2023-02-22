@@ -18,7 +18,7 @@
 - [x] v2.3.1 - Mock DB for testing HTTP API and achieve 100% coverage with [GoMock](https://github.com/golang/mock)
 - [x] v2.3.2 - Write stronger unit tests with a custom [GoMock](https://github.com/golang/mock) matcher
 - [x] v2.4.0 - Create and verify [JWT](https://github.com/golang-jwt/jwt) and [PASETO](https://github.com/o1egl/paseto) token with [UUID](https://github.com/google/uuid)
-- [ ] Implement login user API that returns [JWT](https://github.com/golang-jwt/jwt) or [PASETO](https://github.com/o1egl/paseto) access token
+- [x] v2.5.0 - Implement login user API that returns [JWT](https://github.com/golang-jwt/jwt) or [PASETO](https://github.com/o1egl/paseto) access token
 - [ ] Implement authentication middleware and authorization rules using Gin
 
 ## Sessions, Documentation and gRPC

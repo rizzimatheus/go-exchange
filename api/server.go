@@ -1,7 +1,9 @@
 package api
 
 import (
+	"fmt"
 	db "go-exchange/db/sqlc"
+	"go-exchange/token"
 	"go-exchange/util"
 
 	"github.com/gin-gonic/gin"
@@ -11,16 +13,33 @@ import (
 
 // Server serves HTTP requests for exchange service.
 type Server struct {
-	config util.Config
-	store  db.Store
-	router *gin.Engine
+	config     util.Config
+	store      db.Store
+	tokenMaker token.Maker
+	router     *gin.Engine
 }
 
 // NewServer creates a new HTTP server and set up routing.
 func NewServer(config util.Config, store db.Store) (*Server, error) {
+	var tokenMaker token.Maker
+	var err error
+
+	switch config.TokenType {
+	case "jwt":
+		tokenMaker, err = token.NewJWTMaker(config.TokenSymmetricKey)
+	case "passeto":
+		tokenMaker, err = token.NewPasetoMaker(config.TokenSymmetricKey)
+	default:
+		tokenMaker, err = token.NewPasetoMaker(config.TokenSymmetricKey)
+	}
+	if err != nil {
+		return nil, fmt.Errorf("cannot create token maker: %w", err)
+	}
+
 	server := &Server{
-		config: config,
-		store:  store,
+		config:     config,
+		store:      store,
+		tokenMaker: tokenMaker,
 	}
 
 	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
@@ -38,6 +57,7 @@ func (server *Server) setupRouter() {
 	router.POST("/users", server.createUser)
 	router.PATCH("/users", server.updateUser)
 	router.DELETE("/users/:username", server.deleteUser)
+	router.POST("/users/login", server.loginUser)
 
 	router.POST("/accounts", server.createAccount)
 	router.GET("/accounts/:id", server.getAccount)
