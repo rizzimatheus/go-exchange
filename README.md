@@ -22,8 +22,8 @@
 - [x] v2.6.0 - Implement authentication middleware and authorization rules using [Gin](https://github.com/gin-gonic/gin)
 - [x] v2.7.0 - Manage user session with refresh token
 
-## 3. gRPC and Documentation
-- [ ] Define gRPC API and generate Go code with [Protocol Buffer Compiler](https://grpc.io/docs/protoc-installation/)
+## 3. gRPC
+- [x] v3.1.0 - Define gRPC API and generate Go code with [Protocol Buffer Compiler](https://grpc.io/docs/protoc-installation/)
 - [ ] Run a golang gRPC server and call its API
 - [ ] Implement gRPC API to create and login users
 - [ ] Write code once, serve both gRPC and HTTP requests with [gRPC Gateway](https://github.com/grpc-ecosystem/grpc-gateway)
@@ -33,6 +33,8 @@
 - [ ] Add authorization to protect gRPC API
 - [ ] Write structured logs for gRPC APIs
 - [ ] Write HTTP logger middleware in Go
+
+## 4. Documentation
 - [ ] Generate DB documentation page and schema SQL dump from [DB Docs](https://dbdocs.io/docs) and [DBML](https://www.dbml.org/cli/#installation)
 - [ ] Automatic generate and serve Swagger docs from Go server with [Swagger UI](https://github.com/swagger-api/swagger-ui)
 - [ ] Embed static frontend files inside Golang backend server's binary with [Statik](https://github.com/rakyll/statik)
