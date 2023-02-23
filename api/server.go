@@ -56,6 +56,7 @@ func (server *Server) setupRouter() {
 
 	router.POST("/users", server.createUser)
 	router.POST("/users/login", server.loginUser)
+	router.POST("/tokens/renew_access", server.renewAccessToken)
 
 	router.POST("/trades", server.createTrade)
 	router.GET("/trades/:id", server.getTrade)

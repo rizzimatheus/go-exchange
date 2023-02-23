@@ -20,7 +20,7 @@
 - [x] v2.4.0 - Create and verify [JWT](https://github.com/golang-jwt/jwt) and [PASETO](https://github.com/o1egl/paseto) token with [UUID](https://github.com/google/uuid)
 - [x] v2.5.0 - Implement login user API that returns [JWT](https://github.com/golang-jwt/jwt) or [PASETO](https://github.com/o1egl/paseto) access token
 - [x] v2.6.0 - Implement authentication middleware and authorization rules using [Gin](https://github.com/gin-gonic/gin)
-- [ ] Manage user session with refresh token
+- [x] v2.7.0 - Manage user session with refresh token
 
 ## 3. gRPC and Documentation
 - [ ] Define gRPC API and generate Go code with [Protocol Buffer Compiler](https://grpc.io/docs/protoc-installation/)
