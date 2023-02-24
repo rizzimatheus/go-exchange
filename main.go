@@ -4,13 +4,18 @@ import (
 	"database/sql"
 	"go-exchange/api"
 	db "go-exchange/db/sqlc"
+	"go-exchange/gapi"
+	"go-exchange/pb"
 	"go-exchange/util"
 	"log"
+	"net"
 	"time"
 
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 )
 
 func main() {
@@ -25,7 +30,8 @@ func main() {
 
 	store := db.NewStore(conn)
 
-	runGinServer(config, store)
+	// runGinServer(config, store)
+	runGrpcServer(config, store)
 }
 
 // runGinServer creates and runs a HTTP server with Gin routes
@@ -41,6 +47,29 @@ func runGinServer(config util.Config, store db.Store) {
 	}
 }
 
+// runGrpcServer creates and runs a gRPC server
+func runGrpcServer(config util.Config, store db.Store) {
+	server, err := gapi.NewServer(config, store)
+	if err != nil {
+		log.Fatal("cannot create server")
+	}
+
+	grpcServer := grpc.NewServer()
+	pb.RegisterSimpleBankServer(grpcServer, server)
+	reflection.Register(grpcServer)
+
+	listener, err := net.Listen("tcp", config.GRPCServerAddress)
+	if err != nil {
+		log.Fatal("cannot create listener")
+	}
+
+	log.Printf("start gRPC server at %s", listener.Addr().String())
+	err = grpcServer.Serve(listener)
+	if err != nil {
+		log.Fatal("cannot start gRPC server")
+	}
+}
+
 // runDBMigration applies all up migrations
 func runDBMigration(migrationURL string, dbSource string) {
 	migration, err := migrate.New(migrationURL, dbSource)
@@ -48,7 +77,7 @@ func runDBMigration(migrationURL string, dbSource string) {
 		log.Fatal("cannot create new migrate instance: ", err)
 	}
 
-	if err = migration.Up(); err != nil {
+	if err = migration.Up(); err != nil && err != migrate.ErrNoChange {
 		log.Fatal("failed to run migrate up: ", err)
 	}
 

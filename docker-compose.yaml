@@ -9,6 +9,7 @@ services:
       restart: always
       ports:
         - "8080:8080"
+        - "9090:9090"
       deploy:
         mode: replicated
         replicas: 1
