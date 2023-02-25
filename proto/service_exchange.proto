@@ -9,4 +9,5 @@ option go_package = "go-exchange/pb";
 service SimpleBank {
     rpc CreateUser (CreateUserRequest) returns (CreateUserResponse) {}
     rpc LoginUser (LoginUserRequest) returns (LoginUserResponse) {}
+    rpc UpdateUser (UpdateUserRequest) returns (UpdateUserResponse) {}
 }
