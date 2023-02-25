@@ -31,7 +31,7 @@
 - [x] v3.6.0 - Validate gRPC parameters and send human/machine friendly response
 - [x] v3.7.0 - Write code once, serve both gRPC and HTTP requests with [gRPC Gateway](https://github.com/grpc-ecosystem/grpc-gateway)
 - [x] v3.8.0 - Write structured logs for gRPC APIs with [ZeroLog](https://github.com/rs/zerolog)
-- [ ] Write HTTP logger middleware in Go
+- [x] v3.9.0 - Write HTTP logger middleware with [ZeroLog](https://github.com/rs/zerolog)
 
 ## 4. Documentation
 - [ ] Generate DB documentation page and schema SQL dump from [DB Docs](https://dbdocs.io/docs) and [DBML](https://www.dbml.org/cli/#installation)
