@@ -26,7 +26,7 @@
 - [x] v3.1.0 - Define gRPC API and generate Go code with [Protocol Buffer Compiler](https://grpc.io/docs/protoc-installation/)
 - [x] v3.2.0 - Run a golang gRPC server and call its API
 - [x] v3.3.0 - Implement gRPC API to create, login and update users
-- [ ] Extract info from gRPC metadata
+- [x] v3.4.0 - Extract info from gRPC metadata
 - [ ] Add authorization to protect gRPC API
 - [ ] Validate gRPC parameters and send human/machine friendly response
 - [ ] Write code once, serve both gRPC and HTTP requests with [gRPC Gateway](https://github.com/grpc-ecosystem/grpc-gateway)
