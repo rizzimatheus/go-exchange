@@ -34,7 +34,7 @@
 - [x] v3.9.0 - Write HTTP logger middleware with [ZeroLog](https://github.com/rs/zerolog)
 
 ## 4. Documentation
-- [ ] Generate DB documentation page and schema SQL dump from [DB Docs](https://dbdocs.io/docs) and [DBML](https://www.dbml.org/cli/#installation)
+- [x] v4.1.0 - Generate DB documentation page and schema SQL dump from [DB Docs](https://dbdocs.io/docs) and [DBML](https://www.dbml.org/cli/#installation)
 - [ ] Automatic generate and serve Swagger docs from Go server with [Swagger UI](https://github.com/swagger-api/swagger-ui)
 - [ ] Embed static frontend files inside Golang backend server's binary with [Statik](https://github.com/rakyll/statik)
 

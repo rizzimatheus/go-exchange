@@ -61,6 +61,15 @@ proto:
 	--grpc-gateway_out=pb --grpc-gateway_opt=paths=source_relative \
 	proto/*.proto
 
+## db_docs: generates database documentation
+# To set password: $ dbdocs password --set my_password --project my_project_name
+db_docs:
+	dbdocs build doc/db.dbml
+
+## db_schema: generates database schema from dbml
+db_schema:
+	dbml2sql --postgres -o doc/schema.sql doc/db.dbml
+
 .PHONY: up up_build down \
 		migrate_create migrate_up migrate_down migrate_drop \
 		sqlc test server mock proto
