@@ -8,9 +8,9 @@ import (
 	"go-exchange/util"
 )
 
-// Server serves gRPC requests for our banking service.
+// Server serves gRPC requests for the exchange service.
 type Server struct {
-	pb.UnimplementedSimpleBankServer
+	pb.UnimplementedExchangeServer
 	config          util.Config
 	store           db.Store
 	tokenMaker      token.Maker

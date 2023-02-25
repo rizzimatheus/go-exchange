@@ -29,7 +29,7 @@
 - [x] v3.4.0 - Extract info from gRPC metadata
 - [x] v3.5.0 - Add authorization to protect gRPC API
 - [x] v3.6.0 - Validate gRPC parameters and send human/machine friendly response
-- [ ] Write code once, serve both gRPC and HTTP requests with [gRPC Gateway](https://github.com/grpc-ecosystem/grpc-gateway)
+- [x] v3.7.0 - Write code once, serve both gRPC and HTTP requests with [gRPC Gateway](https://github.com/grpc-ecosystem/grpc-gateway)
 - [ ] Write structured logs for gRPC APIs
 - [ ] Write HTTP logger middleware in Go
 
