@@ -8,10 +8,13 @@ import (
 	"go-exchange/gapi"
 	"go-exchange/pb"
 	"go-exchange/util"
-	"log"
 	"net"
 	"net/http"
+	"os"
 	"time"
+
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
@@ -25,7 +28,12 @@ import (
 func main() {
 	config, err := util.LoadConfig(".")
 	if err != nil {
-		log.Fatal("cannot load config: ", err)
+		log.Fatal().Err(err).Msg("cannot load config")
+	}
+
+	if config.Environment == "development" {
+		// human-friendly logs
+		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 	}
 
 	conn := connectToDB(config)
@@ -43,14 +51,14 @@ func main() {
 func runDBMigration(migrationURL string, dbSource string) {
 	migration, err := migrate.New(migrationURL, dbSource)
 	if err != nil {
-		log.Fatal("cannot create new migrate instance: ", err)
+		log.Fatal().Err(err).Msg("cannot create new migrate instance")
 	}
 
 	if err = migration.Up(); err != nil && err != migrate.ErrNoChange {
-		log.Fatal("failed to run migrate up: ", err)
+		log.Fatal().Err(err).Msg("failed to run migrate up")
 	}
 
-	log.Println("db migrated successfully")
+	log.Info().Msg("db migrated successfully")
 }
 
 // openDB opens and tests db connection
@@ -74,18 +82,18 @@ func connectToDB(config util.Config) *sql.DB {
 	for {
 		connection, err := openDB(config.DBDriver, config.DBSource)
 		if err != nil {
-			log.Println("Postgres not yet ready...")
+			log.Info().Msg("Postgres not yet ready...")
 			counts++
 		} else {
-			log.Println("Connected to Postgres!")
+			log.Info().Msg("Connected to Postgres!")
 			return connection
 		}
 
 		if counts > 15 {
-			log.Fatal("Can't connect to Postgres: ", err)
+			log.Fatal().Err(err).Msg("Can't connect to Postgres")
 		}
 
-		log.Println("Backing off for two seconds...")
+		log.Info().Msg("Backing off for two seconds...")
 		time.Sleep(2 * time.Second)
 	}
 }
@@ -94,12 +102,12 @@ func connectToDB(config util.Config) *sql.DB {
 func runGinServer(config util.Config, store db.Store) {
 	server, err := api.NewServer(config, store)
 	if err != nil {
-		log.Fatal("cannot create server: ", err)
+		log.Fatal().Err(err).Msg("cannot create server")
 	}
 
 	err = server.Start(config.HTTPServerAddress)
 	if err != nil {
-		log.Fatal("cannot start server: ", err)
+		log.Fatal().Err(err).Msg("cannot start server")
 	}
 }
 
@@ -107,22 +115,23 @@ func runGinServer(config util.Config, store db.Store) {
 func runGrpcServer(config util.Config, store db.Store) {
 	server, err := gapi.NewServer(config, store)
 	if err != nil {
-		log.Fatal("cannot create server")
+		log.Fatal().Err(err).Msg("cannot ")
 	}
 
-	grpcServer := grpc.NewServer()
+	gprcLogger := grpc.UnaryInterceptor(gapi.GrpcLogger)
+	grpcServer := grpc.NewServer(gprcLogger)
 	pb.RegisterExchangeServer(grpcServer, server)
 	reflection.Register(grpcServer)
 
 	listener, err := net.Listen("tcp", config.GRPCServerAddress)
 	if err != nil {
-		log.Fatal("cannot create listener: ", err)
+		log.Fatal().Err(err).Msg("cannot create listener")
 	}
 
-	log.Printf("start gRPC server at %s", listener.Addr().String())
+	log.Info().Msgf("start gRPC server at %s", listener.Addr().String())
 	err = grpcServer.Serve(listener)
 	if err != nil {
-		log.Fatal("cannot start gRPC server: ", err)
+		log.Fatal().Err(err).Msg("cannot start gRPC server")
 	}
 }
 
@@ -130,7 +139,7 @@ func runGrpcServer(config util.Config, store db.Store) {
 func runGatewayServer(config util.Config, store db.Store) {
 	server, err := gapi.NewServer(config, store)
 	if err != nil {
-		log.Fatal("cannot create server: ", err)
+		log.Fatal().Err(err).Msg("cannot create server")
 	}
 
 	// for snake_case instead of camelCase
@@ -150,7 +159,7 @@ func runGatewayServer(config util.Config, store db.Store) {
 
 	err = pb.RegisterExchangeHandlerServer(ctx, grpcMux, server)
 	if err != nil {
-		log.Fatal("cannot register handler server: ", err)
+		log.Fatal().Err(err).Msg("cannot register handler server")
 	}
 
 	mux := http.NewServeMux()
@@ -158,12 +167,12 @@ func runGatewayServer(config util.Config, store db.Store) {
 
 	listener, err := net.Listen("tcp", config.HTTPServerAddress)
 	if err != nil {
-		log.Fatal("cannot create listener: ", err)
+		log.Fatal().Err(err).Msg("cannot create listener")
 	}
 
-	log.Printf("start HTTP gateway server at %s", listener.Addr().String())
+	log.Info().Msgf("start HTTP gateway server at %s", listener.Addr().String())
 	err = http.Serve(listener, mux)
 	if err != nil {
-		log.Fatal("cannot start HTTP gateway server: ", err)
+		log.Fatal().Err(err).Msg("cannot start HTTP gateway server")
 	}
 }
