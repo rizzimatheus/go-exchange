@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"go-exchange/api"
 	db "go-exchange/db/sqlc"
+	_ "go-exchange/doc/statik"
 	"go-exchange/gapi"
 	"go-exchange/pb"
 	"go-exchange/util"
@@ -13,6 +14,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/rakyll/statik/fs"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 
@@ -165,8 +167,12 @@ func runGatewayServer(config util.Config, store db.Store) {
 	mux := http.NewServeMux()
 	mux.Handle("/", grpcMux)
 
-	fs := http.FileServer(http.Dir("./doc/swagger"))
-	swaggerHandler := http.StripPrefix("/swagger/", fs)
+	statikFS, err := fs.New()
+	if err != nil {
+		log.Fatal().Err(err).Msg("cannot create statik fs")
+	}
+
+	swaggerHandler := http.StripPrefix("/swagger/", http.FileServer(statikFS))
 	mux.Handle("/swagger/", swaggerHandler)
 
 	listener, err := net.Listen("tcp", config.HTTPServerAddress)

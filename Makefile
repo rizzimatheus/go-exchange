@@ -62,6 +62,7 @@ proto:
 	--grpc-gateway_out=pb --grpc-gateway_opt=paths=source_relative \
 	--openapiv2_out=doc/swagger --openapiv2_opt=allow_merge=true,merge_file_name=go_exchange \
 	proto/*.proto
+	statik -src=./doc/swagger -dest=./doc
 
 ## db_docs: generates database documentation
 # To set password: $ dbdocs password --set my_password --project my_project_name
@@ -74,4 +75,5 @@ db_schema:
 
 .PHONY: up up_build down \
 		migrate_create migrate_up migrate_down migrate_drop \
-		sqlc test server mock proto
+		sqlc test server mock proto \
+		db_docs db_schema
