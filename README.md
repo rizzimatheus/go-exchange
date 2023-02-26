@@ -35,7 +35,7 @@
 
 ## 4. Documentation
 - [x] v4.1.0 - Generate DB documentation page and schema SQL dump from [DB Docs](https://dbdocs.io/docs) and [DBML](https://www.dbml.org/cli/#installation)
-- [ ] Automatic generate and serve Swagger docs from Go server with [Swagger UI](https://github.com/swagger-api/swagger-ui)
+- [x] v4.2.0 - Automatic generate and serve Swagger docs from Go server with [Swagger UI](https://github.com/swagger-api/swagger-ui)
 - [ ] Embed static frontend files inside Golang backend server's binary with [Statik](https://github.com/rakyll/statik)
 
 ---

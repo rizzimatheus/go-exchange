@@ -4,8 +4,21 @@ package pb;
 
 import "user.proto";
 import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
 
 option go_package = "go-exchange/pb";
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+	info: {
+		title: "Go Exchange API";
+		version: "1.0";
+		contact: {
+			name: "Matheus Rizzi";
+			url: "https://github.com/rizzimatheus";
+			email: "matheusrizzi29@gmail.com";
+		};
+	};
+};
 
 service Exchange {
     rpc CreateUser (CreateUserRequest) returns (CreateUserResponse) {
