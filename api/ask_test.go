@@ -20,12 +20,14 @@ import (
 )
 
 func randomAsk(fromAccountID int64, toAccountID int64) db.Ask {
+	amount := util.RandomInt(1, 99)
 	return db.Ask{
-		Pair:          util.RandomPair(),
-		FromAccountID: fromAccountID,
-		ToAccountID:   toAccountID,
-		Price:         util.RandomMoney(),
-		Amount:        util.RandomInt(1, 99),
+		Pair:            util.RandomPair(),
+		FromAccountID:   fromAccountID,
+		ToAccountID:     toAccountID,
+		Price:           util.RandomMoney(),
+		InitialAmount:   amount,
+		RemainingAmount: amount,
 	}
 }
 
@@ -66,7 +68,7 @@ func TestCreateAskAPI(t *testing.T) {
 				"from_account_id": account1.ID,
 				"to_account_id":   account2.ID,
 				"price":           ask.Price,
-				"amount":          ask.Amount,
+				"amount":          ask.InitialAmount,
 			},
 			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
 				addAuthorization(t, request, tokenMaker, authorizationTypeBearer, user.Username, time.Minute)
@@ -75,15 +77,24 @@ func TestCreateAskAPI(t *testing.T) {
 				store.EXPECT().GetAccount(gomock.Any(), gomock.Eq(account1.ID)).Times(1).Return(account1, nil)
 				store.EXPECT().GetAccount(gomock.Any(), gomock.Eq(account2.ID)).Times(1).Return(account2, nil)
 
-				arg := db.CreateAskParams{
-					Pair:          ask.Pair,
-					FromAccountID: ask.FromAccountID,
-					ToAccountID:   ask.ToAccountID,
-					Price:         ask.Price,
-					Amount:        ask.Amount,
-					Status:        util.ACTIVE,
+				group := int32(1)
+				listArg := db.ListTradableBidsParams{
+					Pair:   ask.Pair,
+					Price:  ask.Price,
+					Limit:  groupSize,
+					Offset: (group - 1) * groupSize,
 				}
+				store.EXPECT().ListTradableBids(gomock.Any(), gomock.Eq(listArg)).Times(1).Return([]db.Bid{}, nil)
 
+				arg := db.CreateAskParams{
+					Pair:            ask.Pair,
+					FromAccountID:   ask.FromAccountID,
+					ToAccountID:     ask.ToAccountID,
+					Price:           ask.Price,
+					InitialAmount:   ask.InitialAmount,
+					RemainingAmount: ask.RemainingAmount,
+					Status:          util.ACTIVE,
+				}
 				store.EXPECT().CreateAsk(gomock.Any(), gomock.Eq(arg)).Times(1).Return(ask, nil)
 			},
 			checkResponse: func(recorder *httptest.ResponseRecorder) {
@@ -98,7 +109,7 @@ func TestCreateAskAPI(t *testing.T) {
 				"from_account_id": account1.ID,
 				"to_account_id":   account2.ID,
 				"price":           ask.Price,
-				"amount":          ask.Amount,
+				"amount":          ask.InitialAmount,
 			},
 			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
 				addAuthorization(t, request, tokenMaker, authorizationTypeBearer, user.Username, time.Minute)
@@ -107,13 +118,23 @@ func TestCreateAskAPI(t *testing.T) {
 				store.EXPECT().GetAccount(gomock.Any(), gomock.Eq(account1.ID)).Times(1).Return(account1, nil)
 				store.EXPECT().GetAccount(gomock.Any(), gomock.Eq(account2.ID)).Times(1).Return(account2, nil)
 
+				group := int32(1)
+				listArg := db.ListTradableBidsParams{
+					Pair:   ask.Pair,
+					Price:  ask.Price,
+					Limit:  groupSize,
+					Offset: (group - 1) * groupSize,
+				}
+				store.EXPECT().ListTradableBids(gomock.Any(), gomock.Eq(listArg)).Times(1).Return([]db.Bid{}, nil)
+
 				arg := db.CreateAskParams{
-					Pair:          ask.Pair,
-					FromAccountID: ask.FromAccountID,
-					ToAccountID:   ask.ToAccountID,
-					Price:         ask.Price,
-					Amount:        ask.Amount,
-					Status:        util.ACTIVE,
+					Pair:            ask.Pair,
+					FromAccountID:   ask.FromAccountID,
+					ToAccountID:     ask.ToAccountID,
+					Price:           ask.Price,
+					InitialAmount:   ask.InitialAmount,
+					RemainingAmount: ask.RemainingAmount,
+					Status:          util.ACTIVE,
 				}
 
 				store.EXPECT().CreateAsk(gomock.Any(), gomock.Eq(arg)).Times(1).Return(db.Ask{}, sql.ErrConnDone)
@@ -129,7 +150,7 @@ func TestCreateAskAPI(t *testing.T) {
 				"from_account_id": account1.ID,
 				"to_account_id":   account2.ID,
 				"price":           ask.Price,
-				"amount":          ask.Amount,
+				"amount":          ask.InitialAmount,
 			},
 			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
 				addAuthorization(t, request, tokenMaker, authorizationTypeBearer, user.Username, time.Minute)
@@ -150,7 +171,7 @@ func TestCreateAskAPI(t *testing.T) {
 				"from_account_id": account1.ID,
 				"to_account_id":   account2.ID,
 				"price":           ask.Price,
-				"amount":          ask.Amount,
+				"amount":          ask.InitialAmount,
 			},
 			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
 				addAuthorization(t, request, tokenMaker, authorizationTypeBearer, user.Username, time.Minute)
@@ -171,7 +192,7 @@ func TestCreateAskAPI(t *testing.T) {
 				"from_account_id": account3.ID,
 				"to_account_id":   account1.ID,
 				"price":           ask.Price,
-				"amount":          ask.Amount,
+				"amount":          ask.InitialAmount,
 			},
 			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
 				addAuthorization(t, request, tokenMaker, authorizationTypeBearer, user.Username, time.Minute)
@@ -192,7 +213,7 @@ func TestCreateAskAPI(t *testing.T) {
 				"from_account_id": account1.ID,
 				"to_account_id":   account3.ID,
 				"price":           ask.Price,
-				"amount":          ask.Amount,
+				"amount":          ask.InitialAmount,
 			},
 			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
 				addAuthorization(t, request, tokenMaker, authorizationTypeBearer, user.Username, time.Minute)
@@ -209,11 +230,11 @@ func TestCreateAskAPI(t *testing.T) {
 		{
 			name: "InvalidPair",
 			body: gin.H{
-				"pair":            "BTC/BTC",
+				"pair":            "BTC_BTC",
 				"from_account_id": account1.ID,
 				"to_account_id":   account2.ID,
 				"price":           ask.Price,
-				"amount":          ask.Amount,
+				"amount":          ask.InitialAmount,
 			},
 			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
 				addAuthorization(t, request, tokenMaker, authorizationTypeBearer, user.Username, time.Minute)
@@ -233,7 +254,7 @@ func TestCreateAskAPI(t *testing.T) {
 				"from_account_id": account1.ID,
 				"to_account_id":   account2.ID,
 				"price":           -ask.Price,
-				"amount":          ask.Amount,
+				"amount":          ask.InitialAmount,
 			},
 			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
 				addAuthorization(t, request, tokenMaker, authorizationTypeBearer, user.Username, time.Minute)
@@ -253,7 +274,7 @@ func TestCreateAskAPI(t *testing.T) {
 				"from_account_id": account1.ID,
 				"to_account_id":   account2.ID,
 				"price":           ask.Price,
-				"amount":          -ask.Amount,
+				"amount":          -ask.InitialAmount,
 			},
 			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
 				addAuthorization(t, request, tokenMaker, authorizationTypeBearer, user.Username, time.Minute)
@@ -273,7 +294,7 @@ func TestCreateAskAPI(t *testing.T) {
 				"from_account_id": account1.ID,
 				"to_account_id":   account2.ID,
 				"price":           ask.Price,
-				"amount":          ask.Amount,
+				"amount":          ask.InitialAmount,
 			},
 			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
 				addAuthorization(t, request, tokenMaker, authorizationTypeBearer, user.Username, time.Minute)
@@ -293,7 +314,7 @@ func TestCreateAskAPI(t *testing.T) {
 				"from_account_id": account1.ID,
 				"to_account_id":   account2.ID,
 				"price":           ask.Price,
-				"amount":          ask.Amount,
+				"amount":          ask.InitialAmount,
 			},
 			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
 				addAuthorization(t, request, tokenMaker, authorizationTypeBearer, "unauthorized_user", time.Minute)
@@ -314,7 +335,7 @@ func TestCreateAskAPI(t *testing.T) {
 				"from_account_id": account1.ID,
 				"to_account_id":   account2.ID,
 				"price":           ask.Price,
-				"amount":          ask.Amount,
+				"amount":          ask.InitialAmount,
 			},
 			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
 				//

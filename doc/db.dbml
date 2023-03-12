@@ -79,7 +79,8 @@ Table bids {
   from_account_id bigint [ref: > A.id, not null]
   to_account_id bigint [ref: > A.id, not null]
   price bigint [not null]
-  amount bigint [not null, note: 'it must be positive']
+  initial_amount bigint [not null, note: 'it must be positive']
+  remaining_amount bigint [not null, note: 'it must be positive']
   status varchar [not null]
   created_at timestamptz [not null, default: `now()`]
   
@@ -98,7 +99,8 @@ Table asks {
   from_account_id bigint [ref: > A.id, not null]
   to_account_id bigint [ref: > A.id, not null]
   price bigint [not null]
-  amount bigint [not null, note: 'it must be positive']
+  initial_amount bigint [not null, note: 'it must be positive']
+  remaining_amount bigint [not null, note: 'it must be positive']
   status varchar [not null]
   created_at timestamptz [not null, default: `now()`]
   

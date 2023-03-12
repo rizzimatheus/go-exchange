@@ -1,6 +1,6 @@
 -- SQL dump generated using DBML (dbml-lang.org)
 -- Database: PostgreSQL
--- Generated at: 2023-02-25T20:17:20.724Z
+-- Generated at: 2023-03-01T03:53:08.452Z
 
 CREATE TABLE "users" (
   "username" varchar PRIMARY KEY,
@@ -51,7 +51,8 @@ CREATE TABLE "bids" (
   "from_account_id" bigint NOT NULL,
   "to_account_id" bigint NOT NULL,
   "price" bigint NOT NULL,
-  "amount" bigint NOT NULL,
+  "initial_amount" bigint NOT NULL,
+  "remaining_amount" bigint NOT NULL,
   "status" varchar NOT NULL,
   "created_at" timestamptz NOT NULL DEFAULT (now())
 );
@@ -62,7 +63,8 @@ CREATE TABLE "asks" (
   "from_account_id" bigint NOT NULL,
   "to_account_id" bigint NOT NULL,
   "price" bigint NOT NULL,
-  "amount" bigint NOT NULL,
+  "initial_amount" bigint NOT NULL,
+  "remaining_amount" bigint NOT NULL,
   "status" varchar NOT NULL,
   "created_at" timestamptz NOT NULL DEFAULT (now())
 );
@@ -126,9 +128,13 @@ COMMENT ON COLUMN "trades"."first_amount" IS 'it must be positive';
 
 COMMENT ON COLUMN "trades"."second_amount" IS 'it must be positive';
 
-COMMENT ON COLUMN "bids"."amount" IS 'it must be positive';
+COMMENT ON COLUMN "bids"."initial_amount" IS 'it must be positive';
 
-COMMENT ON COLUMN "asks"."amount" IS 'it must be positive';
+COMMENT ON COLUMN "bids"."remaining_amount" IS 'it must be positive';
+
+COMMENT ON COLUMN "asks"."initial_amount" IS 'it must be positive';
+
+COMMENT ON COLUMN "asks"."remaining_amount" IS 'it must be positive';
 
 ALTER TABLE "accounts" ADD FOREIGN KEY ("owner") REFERENCES "users" ("username");
 

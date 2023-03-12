@@ -12,6 +12,7 @@ import (
 func createRandomAsk(t *testing.T) Ask {
 	pair := util.RandomPair()
 	c1, c2 := util.CurrenciesFromPair(pair)
+	amount := util.RandomMoney()
 	account1 := createRandomAccount(t, c1)
 	account2 := createRandomAccount(t, c2)
 
@@ -20,7 +21,8 @@ func createRandomAsk(t *testing.T) Ask {
 		FromAccountID: account1.ID,
 		ToAccountID:   account2.ID,
 		Price:         util.RandomMoney(),
-		Amount:        util.RandomMoney(),
+		InitialAmount:   amount,
+		RemainingAmount: amount,
 		Status:        util.RandomStatus(),
 	}
 
@@ -32,7 +34,8 @@ func createRandomAsk(t *testing.T) Ask {
 	require.Equal(t, arg.FromAccountID, ask.FromAccountID)
 	require.Equal(t, arg.ToAccountID, ask.ToAccountID)
 	require.Equal(t, arg.Price, ask.Price)
-	require.Equal(t, arg.Amount, ask.Amount)
+	require.Equal(t, arg.InitialAmount, ask.InitialAmount)
+	require.Equal(t, arg.RemainingAmount, ask.RemainingAmount)
 	require.Equal(t, arg.Status, ask.Status)
 
 	require.NotZero(t, ask.ID)
@@ -56,7 +59,8 @@ func TestGetAsk(t *testing.T) {
 	require.Equal(t, ask1.FromAccountID, ask2.FromAccountID)
 	require.Equal(t, ask1.ToAccountID, ask2.ToAccountID)
 	require.Equal(t, ask1.Price, ask2.Price)
-	require.Equal(t, ask1.Amount, ask2.Amount)
+	require.Equal(t, ask1.InitialAmount, ask2.InitialAmount)
+	require.Equal(t, ask1.RemainingAmount, ask2.RemainingAmount)
 	require.Equal(t, ask1.Status, ask2.Status)
 	require.WithinDuration(t, ask1.CreatedAt, ask2.CreatedAt, time.Second)
 }

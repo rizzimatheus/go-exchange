@@ -53,13 +53,19 @@ func (server *Server) createBid(ctx *gin.Context) {
 		return
 	}
 
+	bidStatus, tradedAmount, err := server.matchAsks(ctx, req)
+	if err != nil {
+		return
+	}
+
 	arg := db.CreateBidParams{
-		Pair:          req.Pair,
-		FromAccountID: req.FromAccountID,
-		ToAccountID:   req.ToAccountID,
-		Price:         req.Price,
-		Amount:        req.Amount,
-		Status:        util.ACTIVE,
+		Pair:            req.Pair,
+		FromAccountID:   req.FromAccountID,
+		ToAccountID:     req.ToAccountID,
+		Price:           req.Price,
+		InitialAmount:   req.Amount,
+		RemainingAmount: req.Amount - tradedAmount,
+		Status:          bidStatus,
 	}
 
 	result, err := server.store.CreateBid(ctx, arg)
@@ -143,10 +149,40 @@ func (server *Server) listBids(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, bids)
 }
 
+// GET http://localhost:8080/allbids/?pair=BTC_USDT&page_id=1&page_size=5
+type listAllBidRequest struct {
+	Pair     string `form:"pair" binding:"required,pair"`
+	PageID   int32  `form:"page_id" binding:"required,min=1"`
+	PageSize int32  `form:"page_size" binding:"required,min=1,max=10"`
+}
+
+func (server *Server) listAllBids(ctx *gin.Context) {
+	var req listAllBidRequest
+	if err := ctx.ShouldBindQuery(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	arg := db.ListAllBidsParams{
+		Pair:   req.Pair,
+		Limit:  req.PageSize,
+		Offset: (req.PageID - 1) * req.PageSize,
+	}
+
+	bids, err := server.store.ListAllBids(ctx, arg)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, bids)
+}
+
 // PUT http://localhost:8080/bids
 type updateBidRequest struct {
 	ID     int64  `json:"id" binding:"required,min=1"`
-	Status string `json:"status" binding:"required,eq=canceled"`
+	Status string `json:"status" binding:"required"`
+	Amount int64  `json:"amount" binding:"required,gt=0"`
 }
 
 func (server *Server) updateBid(ctx *gin.Context) {

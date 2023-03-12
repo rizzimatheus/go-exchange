@@ -123,7 +123,7 @@ func TestCreateTradeAPI(t *testing.T) {
 				"second_from_account_id": account3.ID,
 				"second_to_account_id":   account4.ID,
 				"second_amount":          amount,
-				"pair":                   "BTC/BTC",
+				"pair":                   "BTC_BTC",
 			},
 			buildStubs: func(store *mockdb.MockStore) {
 				store.EXPECT().GetAccount(gomock.Any(), gomock.Eq(account1.ID)).Times(0).Return(account1, nil)

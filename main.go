@@ -44,8 +44,8 @@ func main() {
 
 	store := db.NewStore(conn)
 
-	// go runGinServer(config, store)
-	go runGatewayServer(config, store)
+	go runGinServer(config, store)
+	// go runGatewayServer(config, store)
 	runGrpcServer(config, store)
 }
 

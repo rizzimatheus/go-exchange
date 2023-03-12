@@ -1,6 +1,8 @@
 package util
 
-import "strings"
+import (
+	"strings"
+)
 
 // Constants for all supported currencies
 const (
@@ -19,23 +21,23 @@ const (
 
 // Constants for all supported pairs
 const (
-	USDT_BRL = "USDT/BRL"
-	USDT_CAD = "USDT/CAD"
-	USDT_EUR = "USDT/EUR"
-	USDT_JPY = "USDT/JPY"
-	USDT_USD = "USDT/USD"
+	USDT_BRL = "USDT_BRL"
+	USDT_CAD = "USDT_CAD"
+	USDT_EUR = "USDT_EUR"
+	USDT_JPY = "USDT_JPY"
+	USDT_USD = "USDT_USD"
 
-	BTC_USDT = "BTC/USDT"
-	ETH_USDT = "ETH/USDT"
-	MATIC_USDT = "MATIC/USDT"
-	SOL_USDT = "SOL/USDT"
-	
-	ETH_BTC = "ETH/BTC"
-	MATIC_BTC = "MATIC/BTC"
-	SOL_BTC = "SOL/BTC"
-	
-	MATIC_ETH = "MATIC/ETH"
-	SOL_ETH = "SOL/ETH"
+	BTC_USDT   = "BTC_USDT"
+	ETH_USDT   = "ETH_USDT"
+	MATIC_USDT = "MATIC_USDT"
+	SOL_USDT   = "SOL_USDT"
+
+	ETH_BTC   = "ETH_BTC"
+	MATIC_BTC = "MATIC_BTC"
+	SOL_BTC   = "SOL_BTC"
+
+	MATIC_ETH = "MATIC_ETH"
+	SOL_ETH   = "SOL_ETH"
 )
 
 // IsSupportedCurrency returns true if the currency is supported
@@ -58,6 +60,6 @@ func IsSupportedPair(pair string) bool {
 
 // CurrenciesFromPair returns both currencies from a given pair
 func CurrenciesFromPair(pair string) (string, string) {
-	currencies := strings.Split(pair, "/")
+	currencies := strings.Split(pair, "_")
 	return currencies[0], currencies[1]
 }

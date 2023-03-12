@@ -10,17 +10,18 @@ import (
 )
 
 const createBid = `-- name: CreateBid :one
-INSERT INTO bids (pair, from_account_id, to_account_id, price, amount, status) VALUES ($1, $2, $3, $4, $5, $6)
-RETURNING id, pair, from_account_id, to_account_id, price, amount, status, created_at
+INSERT INTO bids (pair, from_account_id, to_account_id, price, initial_amount, remaining_amount, status) VALUES ($1, $2, $3, $4, $5, $6, $7)
+RETURNING id, pair, from_account_id, to_account_id, price, initial_amount, remaining_amount, status, created_at
 `
 
 type CreateBidParams struct {
-	Pair          string `json:"pair"`
-	FromAccountID int64  `json:"from_account_id"`
-	ToAccountID   int64  `json:"to_account_id"`
-	Price         int64  `json:"price"`
-	Amount        int64  `json:"amount"`
-	Status        string `json:"status"`
+	Pair            string `json:"pair"`
+	FromAccountID   int64  `json:"from_account_id"`
+	ToAccountID     int64  `json:"to_account_id"`
+	Price           int64  `json:"price"`
+	InitialAmount   int64  `json:"initial_amount"`
+	RemainingAmount int64  `json:"remaining_amount"`
+	Status          string `json:"status"`
 }
 
 func (q *Queries) CreateBid(ctx context.Context, arg CreateBidParams) (Bid, error) {
@@ -29,7 +30,8 @@ func (q *Queries) CreateBid(ctx context.Context, arg CreateBidParams) (Bid, erro
 		arg.FromAccountID,
 		arg.ToAccountID,
 		arg.Price,
-		arg.Amount,
+		arg.InitialAmount,
+		arg.RemainingAmount,
 		arg.Status,
 	)
 	var i Bid
@@ -39,7 +41,8 @@ func (q *Queries) CreateBid(ctx context.Context, arg CreateBidParams) (Bid, erro
 		&i.FromAccountID,
 		&i.ToAccountID,
 		&i.Price,
-		&i.Amount,
+		&i.InitialAmount,
+		&i.RemainingAmount,
 		&i.Status,
 		&i.CreatedAt,
 	)
@@ -47,7 +50,7 @@ func (q *Queries) CreateBid(ctx context.Context, arg CreateBidParams) (Bid, erro
 }
 
 const getBid = `-- name: GetBid :one
-SELECT id, pair, from_account_id, to_account_id, price, amount, status, created_at FROM bids
+SELECT id, pair, from_account_id, to_account_id, price, initial_amount, remaining_amount, status, created_at FROM bids
 WHERE id = $1
 LIMIT 1
 `
@@ -61,15 +64,65 @@ func (q *Queries) GetBid(ctx context.Context, id int64) (Bid, error) {
 		&i.FromAccountID,
 		&i.ToAccountID,
 		&i.Price,
-		&i.Amount,
+		&i.InitialAmount,
+		&i.RemainingAmount,
 		&i.Status,
 		&i.CreatedAt,
 	)
 	return i, err
 }
 
+const listAllBids = `-- name: ListAllBids :many
+SELECT id, pair, price, remaining_amount FROM bids
+WHERE pair = $1
+ORDER BY price DESC
+LIMIT $2
+OFFSET $3
+`
+
+type ListAllBidsParams struct {
+	Pair   string `json:"pair"`
+	Limit  int32  `json:"limit"`
+	Offset int32  `json:"offset"`
+}
+
+type ListAllBidsRow struct {
+	ID              int64  `json:"id"`
+	Pair            string `json:"pair"`
+	Price           int64  `json:"price"`
+	RemainingAmount int64  `json:"remaining_amount"`
+}
+
+func (q *Queries) ListAllBids(ctx context.Context, arg ListAllBidsParams) ([]ListAllBidsRow, error) {
+	rows, err := q.db.QueryContext(ctx, listAllBids, arg.Pair, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ListAllBidsRow{}
+	for rows.Next() {
+		var i ListAllBidsRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Pair,
+			&i.Price,
+			&i.RemainingAmount,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listBids = `-- name: ListBids :many
-SELECT id, pair, from_account_id, to_account_id, price, amount, status, created_at FROM bids
+SELECT id, pair, from_account_id, to_account_id, price, initial_amount, remaining_amount, status, created_at FROM bids
 WHERE from_account_id = $1 OR to_account_id = $2
 ORDER BY id
 LIMIT $3
@@ -103,7 +156,61 @@ func (q *Queries) ListBids(ctx context.Context, arg ListBidsParams) ([]Bid, erro
 			&i.FromAccountID,
 			&i.ToAccountID,
 			&i.Price,
-			&i.Amount,
+			&i.InitialAmount,
+			&i.RemainingAmount,
+			&i.Status,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listTradableBids = `-- name: ListTradableBids :many
+SELECT id, pair, from_account_id, to_account_id, price, initial_amount, remaining_amount, status, created_at FROM bids
+WHERE status = 'active' AND pair = $1 AND price >= $2
+ORDER BY price DESC
+LIMIT $3
+OFFSET $4
+`
+
+type ListTradableBidsParams struct {
+	Pair   string `json:"pair"`
+	Price  int64  `json:"price"`
+	Limit  int32  `json:"limit"`
+	Offset int32  `json:"offset"`
+}
+
+func (q *Queries) ListTradableBids(ctx context.Context, arg ListTradableBidsParams) ([]Bid, error) {
+	rows, err := q.db.QueryContext(ctx, listTradableBids,
+		arg.Pair,
+		arg.Price,
+		arg.Limit,
+		arg.Offset,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Bid{}
+	for rows.Next() {
+		var i Bid
+		if err := rows.Scan(
+			&i.ID,
+			&i.Pair,
+			&i.FromAccountID,
+			&i.ToAccountID,
+			&i.Price,
+			&i.InitialAmount,
+			&i.RemainingAmount,
 			&i.Status,
 			&i.CreatedAt,
 		); err != nil {
@@ -122,18 +229,21 @@ func (q *Queries) ListBids(ctx context.Context, arg ListBidsParams) ([]Bid, erro
 
 const updateBid = `-- name: UpdateBid :one
 UPDATE bids
-  SET status = $2
+SET 
+  status = $2,
+  remaining_amount = $3
 WHERE id = $1
-RETURNING id, pair, from_account_id, to_account_id, price, amount, status, created_at
+RETURNING id, pair, from_account_id, to_account_id, price, initial_amount, remaining_amount, status, created_at
 `
 
 type UpdateBidParams struct {
-	ID     int64  `json:"id"`
-	Status string `json:"status"`
+	ID              int64  `json:"id"`
+	Status          string `json:"status"`
+	RemainingAmount int64  `json:"remaining_amount"`
 }
 
 func (q *Queries) UpdateBid(ctx context.Context, arg UpdateBidParams) (Bid, error) {
-	row := q.db.QueryRowContext(ctx, updateBid, arg.ID, arg.Status)
+	row := q.db.QueryRowContext(ctx, updateBid, arg.ID, arg.Status, arg.RemainingAmount)
 	var i Bid
 	err := row.Scan(
 		&i.ID,
@@ -141,7 +251,8 @@ func (q *Queries) UpdateBid(ctx context.Context, arg UpdateBidParams) (Bid, erro
 		&i.FromAccountID,
 		&i.ToAccountID,
 		&i.Price,
-		&i.Amount,
+		&i.InitialAmount,
+		&i.RemainingAmount,
 		&i.Status,
 		&i.CreatedAt,
 	)

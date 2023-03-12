@@ -52,13 +52,19 @@ func (server *Server) createAsk(ctx *gin.Context) {
 		return
 	}
 
+	askStatus, tradedAmount, err := server.matchBids(ctx, req)
+	if err != nil {
+		return
+	}
+
 	arg := db.CreateAskParams{
 		Pair:          req.Pair,
 		FromAccountID: req.FromAccountID,
 		ToAccountID:   req.ToAccountID,
 		Price:         req.Price,
-		Amount:        req.Amount,
-		Status:        util.ACTIVE,
+		InitialAmount:   req.Amount,
+		RemainingAmount: req.Amount - tradedAmount,
+		Status:        askStatus,
 	}
 
 	result, err := server.store.CreateAsk(ctx, arg)
@@ -142,10 +148,40 @@ func (server *Server) listAsks(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, asks)
 }
 
+// GET http://localhost:8080/allasks/?pair=BTC_USDT&page_id=1&page_size=5
+type listAllAskRequest struct {
+	Pair     string `form:"pair" binding:"required,pair"`
+	PageID   int32  `form:"page_id" binding:"required,min=1"`
+	PageSize int32  `form:"page_size" binding:"required,min=1,max=10"`
+}
+
+func (server *Server) listAllAsks(ctx *gin.Context) {
+	var req listAllAskRequest
+	if err := ctx.ShouldBindQuery(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	arg := db.ListAllAsksParams{
+		Pair:   req.Pair,
+		Limit:  req.PageSize,
+		Offset: (req.PageID - 1) * req.PageSize,
+	}
+
+	asks, err := server.store.ListAllAsks(ctx, arg)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, asks)
+}
+
 // PUT http://localhost:8080/asks
 type updateAskRequest struct {
 	ID     int64  `json:"id" binding:"required,min=1"`
-	Status string `json:"status" binding:"required,eq=canceled"`
+	Status string `json:"status" binding:"required"`
+	Amount int64  `json:"amount" binding:"required,gt=0"`
 }
 
 func (server *Server) updateAsk(ctx *gin.Context) {

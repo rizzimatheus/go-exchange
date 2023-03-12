@@ -25,9 +25,11 @@ type Ask struct {
 	ToAccountID   int64  `json:"to_account_id"`
 	Price         int64  `json:"price"`
 	// it must be positive
-	Amount    int64     `json:"amount"`
-	Status    string    `json:"status"`
-	CreatedAt time.Time `json:"created_at"`
+	InitialAmount int64 `json:"initial_amount"`
+	// it must be positive
+	RemainingAmount int64     `json:"remaining_amount"`
+	Status          string    `json:"status"`
+	CreatedAt       time.Time `json:"created_at"`
 }
 
 type Bid struct {
@@ -37,9 +39,11 @@ type Bid struct {
 	ToAccountID   int64  `json:"to_account_id"`
 	Price         int64  `json:"price"`
 	// it must be positive
-	Amount    int64     `json:"amount"`
-	Status    string    `json:"status"`
-	CreatedAt time.Time `json:"created_at"`
+	InitialAmount int64 `json:"initial_amount"`
+	// it must be positive
+	RemainingAmount int64     `json:"remaining_amount"`
+	Status          string    `json:"status"`
+	CreatedAt       time.Time `json:"created_at"`
 }
 
 type Entry struct {

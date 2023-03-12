@@ -349,6 +349,36 @@ func (mr *MockStoreMockRecorder) ListAccounts(arg0, arg1 interface{}) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAccounts", reflect.TypeOf((*MockStore)(nil).ListAccounts), arg0, arg1)
 }
 
+// ListAllAsks mocks base method.
+func (m *MockStore) ListAllAsks(arg0 context.Context, arg1 db.ListAllAsksParams) ([]db.ListAllAsksRow, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListAllAsks", arg0, arg1)
+	ret0, _ := ret[0].([]db.ListAllAsksRow)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListAllAsks indicates an expected call of ListAllAsks.
+func (mr *MockStoreMockRecorder) ListAllAsks(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAllAsks", reflect.TypeOf((*MockStore)(nil).ListAllAsks), arg0, arg1)
+}
+
+// ListAllBids mocks base method.
+func (m *MockStore) ListAllBids(arg0 context.Context, arg1 db.ListAllBidsParams) ([]db.ListAllBidsRow, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListAllBids", arg0, arg1)
+	ret0, _ := ret[0].([]db.ListAllBidsRow)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListAllBids indicates an expected call of ListAllBids.
+func (mr *MockStoreMockRecorder) ListAllBids(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAllBids", reflect.TypeOf((*MockStore)(nil).ListAllBids), arg0, arg1)
+}
+
 // ListAsks mocks base method.
 func (m *MockStore) ListAsks(arg0 context.Context, arg1 db.ListAsksParams) ([]db.Ask, error) {
 	m.ctrl.T.Helper()
@@ -392,6 +422,36 @@ func (m *MockStore) ListEntries(arg0 context.Context, arg1 db.ListEntriesParams)
 func (mr *MockStoreMockRecorder) ListEntries(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListEntries", reflect.TypeOf((*MockStore)(nil).ListEntries), arg0, arg1)
+}
+
+// ListTradableAsks mocks base method.
+func (m *MockStore) ListTradableAsks(arg0 context.Context, arg1 db.ListTradableAsksParams) ([]db.Ask, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListTradableAsks", arg0, arg1)
+	ret0, _ := ret[0].([]db.Ask)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListTradableAsks indicates an expected call of ListTradableAsks.
+func (mr *MockStoreMockRecorder) ListTradableAsks(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListTradableAsks", reflect.TypeOf((*MockStore)(nil).ListTradableAsks), arg0, arg1)
+}
+
+// ListTradableBids mocks base method.
+func (m *MockStore) ListTradableBids(arg0 context.Context, arg1 db.ListTradableBidsParams) ([]db.Bid, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListTradableBids", arg0, arg1)
+	ret0, _ := ret[0].([]db.Bid)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListTradableBids indicates an expected call of ListTradableBids.
+func (mr *MockStoreMockRecorder) ListTradableBids(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListTradableBids", reflect.TypeOf((*MockStore)(nil).ListTradableBids), arg0, arg1)
 }
 
 // ListTrades mocks base method.

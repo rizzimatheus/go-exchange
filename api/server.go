@@ -65,6 +65,9 @@ func (server *Server) setupRouter() {
 	router.GET("/transfers/:id", server.getTransfer)
 	router.GET("/transfers", server.listTransfers)
 
+	router.GET("/allasks", server.listAllAsks)
+	router.GET("/allbids", server.listAllBids)
+
 	authRoutes := router.Group("/").Use(authMiddleware(server.tokenMaker))
 
 	authRoutes.PATCH("/users", server.updateUser)

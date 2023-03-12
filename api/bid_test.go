@@ -20,12 +20,14 @@ import (
 )
 
 func randomBid(fromAccountID int64, toAccountID int64) db.Bid {
+	amount := util.RandomInt(1, 99)
 	return db.Bid{
-		Pair:          util.RandomPair(),
-		FromAccountID: fromAccountID,
-		ToAccountID:   toAccountID,
-		Price:         util.RandomMoney(),
-		Amount:        util.RandomInt(1, 99),
+		Pair:            util.RandomPair(),
+		FromAccountID:   fromAccountID,
+		ToAccountID:     toAccountID,
+		Price:           util.RandomMoney(),
+		InitialAmount:   amount,
+		RemainingAmount: amount,
 	}
 }
 
@@ -66,7 +68,7 @@ func TestCreateBidAPI(t *testing.T) {
 				"from_account_id": account1.ID,
 				"to_account_id":   account2.ID,
 				"price":           bid.Price,
-				"amount":          bid.Amount,
+				"amount":          bid.InitialAmount,
 			},
 			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
 				addAuthorization(t, request, tokenMaker, authorizationTypeBearer, user.Username, time.Minute)
@@ -75,13 +77,23 @@ func TestCreateBidAPI(t *testing.T) {
 				store.EXPECT().GetAccount(gomock.Any(), gomock.Eq(account1.ID)).Times(1).Return(account1, nil)
 				store.EXPECT().GetAccount(gomock.Any(), gomock.Eq(account2.ID)).Times(1).Return(account2, nil)
 
+				group := int32(1)
+				listArg := db.ListTradableAsksParams{
+					Pair:   bid.Pair,
+					Price:  bid.Price,
+					Limit:  groupSize,
+					Offset: (group - 1) * groupSize,
+				}
+				store.EXPECT().ListTradableAsks(gomock.Any(), gomock.Eq(listArg)).Times(1).Return([]db.Ask{}, nil)
+
 				arg := db.CreateBidParams{
-					Pair:          bid.Pair,
-					FromAccountID: bid.FromAccountID,
-					ToAccountID:   bid.ToAccountID,
-					Price:         bid.Price,
-					Amount:        bid.Amount,
-					Status:        util.ACTIVE,
+					Pair:            bid.Pair,
+					FromAccountID:   bid.FromAccountID,
+					ToAccountID:     bid.ToAccountID,
+					Price:           bid.Price,
+					InitialAmount:   bid.InitialAmount,
+					RemainingAmount: bid.RemainingAmount,
+					Status:          util.ACTIVE,
 				}
 
 				store.EXPECT().CreateBid(gomock.Any(), gomock.Eq(arg)).Times(1).Return(bid, nil)
@@ -98,7 +110,7 @@ func TestCreateBidAPI(t *testing.T) {
 				"from_account_id": account1.ID,
 				"to_account_id":   account2.ID,
 				"price":           bid.Price,
-				"amount":          bid.Amount,
+				"amount":          bid.InitialAmount,
 			},
 			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
 				addAuthorization(t, request, tokenMaker, authorizationTypeBearer, user.Username, time.Minute)
@@ -107,13 +119,23 @@ func TestCreateBidAPI(t *testing.T) {
 				store.EXPECT().GetAccount(gomock.Any(), gomock.Eq(account1.ID)).Times(1).Return(account1, nil)
 				store.EXPECT().GetAccount(gomock.Any(), gomock.Eq(account2.ID)).Times(1).Return(account2, nil)
 
+				group := int32(1)
+				listArg := db.ListTradableAsksParams{
+					Pair:   bid.Pair,
+					Price:  bid.Price,
+					Limit:  groupSize,
+					Offset: (group - 1) * groupSize,
+				}
+				store.EXPECT().ListTradableAsks(gomock.Any(), gomock.Eq(listArg)).Times(1).Return([]db.Ask{}, nil)
+
 				arg := db.CreateBidParams{
-					Pair:          bid.Pair,
-					FromAccountID: bid.FromAccountID,
-					ToAccountID:   bid.ToAccountID,
-					Price:         bid.Price,
-					Amount:        bid.Amount,
-					Status:        util.ACTIVE,
+					Pair:            bid.Pair,
+					FromAccountID:   bid.FromAccountID,
+					ToAccountID:     bid.ToAccountID,
+					Price:           bid.Price,
+					InitialAmount:   bid.InitialAmount,
+					RemainingAmount: bid.RemainingAmount,
+					Status:          util.ACTIVE,
 				}
 
 				store.EXPECT().CreateBid(gomock.Any(), gomock.Eq(arg)).Times(1).Return(db.Bid{}, sql.ErrConnDone)
@@ -129,7 +151,7 @@ func TestCreateBidAPI(t *testing.T) {
 				"from_account_id": account1.ID,
 				"to_account_id":   account2.ID,
 				"price":           bid.Price,
-				"amount":          bid.Amount,
+				"amount":          bid.InitialAmount,
 			},
 			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
 				addAuthorization(t, request, tokenMaker, authorizationTypeBearer, user.Username, time.Minute)
@@ -150,7 +172,7 @@ func TestCreateBidAPI(t *testing.T) {
 				"from_account_id": account1.ID,
 				"to_account_id":   account2.ID,
 				"price":           bid.Price,
-				"amount":          bid.Amount,
+				"amount":          bid.InitialAmount,
 			},
 			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
 				addAuthorization(t, request, tokenMaker, authorizationTypeBearer, user.Username, time.Minute)
@@ -171,7 +193,7 @@ func TestCreateBidAPI(t *testing.T) {
 				"from_account_id": account3.ID,
 				"to_account_id":   account1.ID,
 				"price":           bid.Price,
-				"amount":          bid.Amount,
+				"amount":          bid.InitialAmount,
 			},
 			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
 				addAuthorization(t, request, tokenMaker, authorizationTypeBearer, user.Username, time.Minute)
@@ -192,7 +214,7 @@ func TestCreateBidAPI(t *testing.T) {
 				"from_account_id": account1.ID,
 				"to_account_id":   account3.ID,
 				"price":           bid.Price,
-				"amount":          bid.Amount,
+				"amount":          bid.InitialAmount,
 			},
 			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
 				addAuthorization(t, request, tokenMaker, authorizationTypeBearer, user.Username, time.Minute)
@@ -209,11 +231,11 @@ func TestCreateBidAPI(t *testing.T) {
 		{
 			name: "InvalidPair",
 			body: gin.H{
-				"pair":            "BTC/BTC",
+				"pair":            "BTC_BTC",
 				"from_account_id": account1.ID,
 				"to_account_id":   account2.ID,
 				"price":           bid.Price,
-				"amount":          bid.Amount,
+				"amount":          bid.InitialAmount,
 			},
 			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
 				addAuthorization(t, request, tokenMaker, authorizationTypeBearer, user.Username, time.Minute)
@@ -233,7 +255,7 @@ func TestCreateBidAPI(t *testing.T) {
 				"from_account_id": account1.ID,
 				"to_account_id":   account2.ID,
 				"price":           -bid.Price,
-				"amount":          bid.Amount,
+				"amount":          bid.InitialAmount,
 			},
 			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
 				addAuthorization(t, request, tokenMaker, authorizationTypeBearer, user.Username, time.Minute)
@@ -253,7 +275,7 @@ func TestCreateBidAPI(t *testing.T) {
 				"from_account_id": account1.ID,
 				"to_account_id":   account2.ID,
 				"price":           bid.Price,
-				"amount":          -bid.Amount,
+				"amount":          -bid.InitialAmount,
 			},
 			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
 				addAuthorization(t, request, tokenMaker, authorizationTypeBearer, user.Username, time.Minute)
@@ -273,7 +295,7 @@ func TestCreateBidAPI(t *testing.T) {
 				"from_account_id": account1.ID,
 				"to_account_id":   account2.ID,
 				"price":           bid.Price,
-				"amount":          bid.Amount,
+				"amount":          bid.InitialAmount,
 			},
 			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
 				addAuthorization(t, request, tokenMaker, authorizationTypeBearer, user.Username, time.Minute)
@@ -293,7 +315,7 @@ func TestCreateBidAPI(t *testing.T) {
 				"from_account_id": account1.ID,
 				"to_account_id":   account2.ID,
 				"price":           bid.Price,
-				"amount":          bid.Amount,
+				"amount":          bid.InitialAmount,
 			},
 			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
 				addAuthorization(t, request, tokenMaker, authorizationTypeBearer, "unauthorized_user", time.Minute)
@@ -314,7 +336,7 @@ func TestCreateBidAPI(t *testing.T) {
 				"from_account_id": account1.ID,
 				"to_account_id":   account2.ID,
 				"price":           bid.Price,
-				"amount":          bid.Amount,
+				"amount":          bid.InitialAmount,
 			},
 			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
 				//
@@ -328,7 +350,6 @@ func TestCreateBidAPI(t *testing.T) {
 				require.Equal(t, http.StatusUnauthorized, recorder.Code)
 			},
 		},
-		
 	}
 
 	for i := range testCases {
